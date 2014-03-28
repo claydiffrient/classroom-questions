@@ -1,5 +1,5 @@
 var PORT = 6789;
-var MCAST_ADDR = '224.100.0.1';//'239.239.239.1';
+var MCAST_ADDR = '239.239.239.1';
 var dgram = require('dgram');
 var client = dgram.createSocket('udp4');
 

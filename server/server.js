@@ -2,7 +2,8 @@
  * Server for the Classroom-Questions application.
  */
 var PORT = 6789;
-var MCAST_ADDR = '224.100.0.1';//'239.239.239.1'
+var MCAST_ADDR = '239.239.239.1';
+var HOST = '10.50.176.135';
 
 var dgram = require('dgram');             // Provides UDP services
 var sys = require('sys');                 // Access the system.
@@ -16,7 +17,7 @@ var rl = readline.createInterface({
 
 
 
-server.bind(PORT);
+server.bind();
 
 
 //////////
@@ -33,14 +34,19 @@ server.on('listening', function () {
   var address = server.address();
   console.log("server listening on " + address.address + ':' + address.port);
 
-  rl.question("What question do you want to ask?", function (answer) {
-    var message = new Buffer(answer);
+  rl.question("What question do you want to ask? ", function (answer) {
+    /*var message = new Buffer(answer);
     server.send(message, 0, message.length, PORT, MCAST_ADDR, function (err, bytes) {
-      rl.close();
       server.close();
-    });
+    }); */
   });
 
+});
+
+rl.on('line', function (input) {
+  console.log("here we are..." + input);
+  var input = new Buffer(input);
+  server.send(input, 0, input.length, PORT, MCAST_ADDR);
 });
 
 /**
