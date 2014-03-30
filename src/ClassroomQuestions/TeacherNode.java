@@ -3,6 +3,7 @@ package ClassroomQuestions;
 import ClassroomQuestions.exceptions.InvalidGroupNumberException;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.util.Scanner;
 
 /**
@@ -68,9 +69,24 @@ public class TeacherNode
         mQuestionMessage.setQuestionText(question);
     }
 
+    private void sendMessage()
+    {
+        byte[] bytes = mQuestionMessage.toString().getBytes();
+        DatagramPacket data = new DatagramPacket(bytes, 0, bytes.length, mGroup, PORT_NUMBER);
+        try
+        {
+            mSocket.send(data);
+        }
+        catch (IOException e) {
+            System.out.println("Unable to send message.");
+            e.printStackTrace();
+        }
+    }
+
     public void run()
     {
         getQuestionMessage();
+        sendMessage();
     }
 
     public static void main(String[] args)

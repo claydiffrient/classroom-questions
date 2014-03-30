@@ -11,8 +11,10 @@ import java.net.MulticastSocket;
  */
 public class Node
 {
-    private MulticastSocket mSocket;
-    private InetAddress mGroup;
+    protected MulticastSocket mSocket;
+    protected InetAddress mGroup;
+
+    protected final static int PORT_NUMBER = 20000;
 
     public Node(int pNodeNumber)
         throws InvalidGroupNumberException
@@ -23,7 +25,7 @@ public class Node
         }
         try
         {
-            mSocket = new MulticastSocket(20000);
+            mSocket = new MulticastSocket(PORT_NUMBER);
             mGroup = InetAddress.getByName("224.0.0" + pNodeNumber);
             mSocket.joinGroup(mGroup);
         }
