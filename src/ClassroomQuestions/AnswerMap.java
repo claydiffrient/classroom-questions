@@ -2,6 +2,10 @@ package ClassroomQuestions;
 
 import ClassroomQuestions.exceptions.AnswerNotFoundException;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -79,6 +83,25 @@ public class AnswerMap
             throw new AnswerNotFoundException();
         };
         return value;
+    }
+
+    public void printAllResponseStats(PrintStream pPrintStream)
+    {
+        pPrintStream.println("\nAnswer Statistics:");
+        Iterator itr = mAnswerCount.entrySet().iterator();
+        Integer[] totalsArray = mAnswerCount.values().toArray(new Integer[0]);
+        int totalSum = 0;
+        for (int i : totalsArray)
+        {
+            totalSum += i;
+        }
+        while (itr.hasNext())
+        {
+            Map.Entry entry = (Map.Entry) itr.next();
+            //TODO: Fix this logic so the print out is correct.
+            /*pPrintStream.println("\t" + entry.getKey() + ":" + entry.getValue() + " out of " + mAnswerCount.size() +
+                                 " which is " + (((int) entry.getValue() / totalSum) * 100) + "%"); */
+        }
     }
 
 

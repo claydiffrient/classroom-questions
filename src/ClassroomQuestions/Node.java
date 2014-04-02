@@ -1,20 +1,24 @@
 package ClassroomQuestions;
 
 import ClassroomQuestions.exceptions.InvalidGroupNumberException;
+import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Observable;
 
 /**
  * Created by clay on 3/28/14.
  */
 public class Node
+    extends Observable
 {
     protected MulticastSocket mSocket;
     protected InetAddress mGroup;
 
-    protected final static int PORT_NUMBER = 20000;
+    protected final static int GROUP_PORT = 20000;
+    protected final static int REPLY_PORT = 20001;
 
     public Node(int pNodeNumber)
         throws InvalidGroupNumberException
@@ -25,7 +29,7 @@ public class Node
         }
         try
         {
-            mSocket = new MulticastSocket(PORT_NUMBER);
+            mSocket = new MulticastSocket(GROUP_PORT);
             mGroup = InetAddress.getByName("224.0.0" + pNodeNumber);
             mSocket.joinGroup(mGroup);
         }

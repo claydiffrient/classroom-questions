@@ -4,6 +4,8 @@ import ClassroomQuestions.exceptions.InvalidGroupNumberException;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Scanner;
 
 /**
@@ -44,17 +46,9 @@ public class TeacherNode
         {
             System.out.print("Are there more answers? (Y/N)");
             char selection = 'z';
-            try
-            {
-                System.out.println(System.in.toString());
-                selection = (char) System.in.read();
-                System.in.reset();
-            }
-            catch (IOException ex)
-            {
-                System.out.println("Invalid input");
-            }
-            if (selection == 'n')
+            selection = input.nextLine().toLowerCase().charAt(0);
+
+            if (selection != 'y')
             {
                 end = true;
             }
@@ -62,6 +56,7 @@ public class TeacherNode
             {
                 System.out.print(keyVal + ":");
                 answers.addAnswer(keyVal, input.nextLine());
+                keyVal++;
             }
         }
 
@@ -72,7 +67,7 @@ public class TeacherNode
     private void sendMessage()
     {
         byte[] bytes = mQuestionMessage.toString().getBytes();
-        DatagramPacket data = new DatagramPacket(bytes, 0, bytes.length, mGroup, PORT_NUMBER);
+        DatagramPacket data = new DatagramPacket(bytes, 0, bytes.length, mGroup, GROUP_PORT);
         try
         {
             mSocket.send(data);
@@ -83,16 +78,56 @@ public class TeacherNode
         }
     }
 
+    private void waitForReplies()
+    {
+        // TODO: Implement this based on time
+        // System.out.println("How many minutes do the students have to reply?");
+        // Scanner input = new Scanner(System.in);
+        // int minutes = input.nextInt();
+
+        //For now, this will loop until the teacher presses enter.
+        try
+        {
+            ServerSocket listenSocket = new ServerSocket(REPLY_PORT);
+            int count = 0;
+            while (true) {
+                Socket connectionSocket = listenSocket.accept();
+                count++;
+                System.out.println(count + " potential responses received.");
+                StudentResponse response = new StudentResponse(connectionSocket, mQuestionMessage.getAnswers());
+                Thread thread = new Thread(response);
+                thread.start();
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+
+
+
+    }
+
     public void run()
     {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                mQuestionMessage.getAnswers().printAllResponseStats(System.out);
+            }
+        });
         getQuestionMessage();
         sendMessage();
+        waitForReplies();
     }
+
+
 
     public static void main(String[] args)
     {
         try
         {
+
             new TeacherNode(Integer.parseInt(args[0])).run();
         }
         catch (Exception ex)
