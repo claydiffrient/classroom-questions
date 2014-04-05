@@ -1,4 +1,4 @@
-<project name="ClassroomQuestions" default="dist" basedir=".">
+<project name="com.simplydiffrient.ClassroomQuestions" default="dist" basedir=".">
     <description>
         A program where students may respond to teacher's questions.
     </description>
@@ -57,6 +57,9 @@
     </target>
 
     <taskdef resource="testngtasks" classpath="lib/testng-6.8.jar" />
+
+    <target name="dist" depends="compile"/>
+
 
     <target name="clean">
         <delete dir="dist" />
