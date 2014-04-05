@@ -33,11 +33,11 @@ public class StudentResponse
         try
         {
             mAnswers.addResponseStats(response);
-            os.writeBytes("200");
+            os.writeBytes("200\n");
         }
         catch (AnswerNotFoundException ex)
         {
-            os.writeBytes("400");
+            os.writeBytes("400\n");
         }
     }
 
