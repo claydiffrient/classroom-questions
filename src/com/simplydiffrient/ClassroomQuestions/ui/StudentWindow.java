@@ -1,11 +1,14 @@
 package com.simplydiffrient.ClassroomQuestions.ui;
 
+import com.simplydiffrient.ClassroomQuestions.service.AnswerSender;
 import com.simplydiffrient.ClassroomQuestions.service.QuestionMessage;
 import com.simplydiffrient.ClassroomQuestions.service.QuestionReceiver;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -31,6 +34,7 @@ public class StudentWindow
     implements Runnable
 {
     QuestionReceiver mQuestionReceiver;
+    AnswerSender mAnswerSender;
     ObservableList<String> mAnswerChoices;
     TextArea mQuestionArea;
     Scene mDisplayScene;
@@ -112,7 +116,7 @@ public class StudentWindow
 
         //Set up the answer area
         HBox answerArea = new HBox(10);
-        ChoiceBox<String> answerChoices = new ChoiceBox<String>(mAnswerChoices);
+        final ChoiceBox<String> answerChoices = new ChoiceBox<String>(mAnswerChoices);
         Label answerLabel = new Label("Answer:");
         answerLabel.setFont(new Font(14));
         answerLabel.setLabelFor(answerChoices);
@@ -122,6 +126,18 @@ public class StudentWindow
         BorderPane.setMargin(answerArea, new Insets(0, 0, 100, 0));
         rootPanel.setBottom(answerArea);
 
+        sendAnswer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                if (mResponseAddr != null)
+                {
+                    char choice = answerChoices.getValue().charAt(0);
+                    AnswerSender sender = new AnswerSender(mResponseAddr);
+                    sender.send(choice);
+                }
+
+            }
+        });
 
 
         return new Scene(rootPanel, 600, 300);
