@@ -21,7 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import java.net.InetAddress;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -137,7 +137,7 @@ public class TeacherWindow
             @Override
             public void handle(ActionEvent actionEvent) {
                 //Create a map for sending the questions.
-                Map<String, String> answers = new HashMap<String, String>();
+                Map<String, String> answers = new LinkedHashMap<String, String>();
                 for (int i = 0; i < mAnswerTextFields.length; i++) {
                     answers.put(answerLabels[i], mAnswerTextFields[i].getText());
                 }

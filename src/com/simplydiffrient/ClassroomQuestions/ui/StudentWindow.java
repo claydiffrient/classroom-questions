@@ -2,6 +2,7 @@ package com.simplydiffrient.ClassroomQuestions.ui;
 
 import com.simplydiffrient.ClassroomQuestions.service.QuestionMessage;
 import com.simplydiffrient.ClassroomQuestions.service.QuestionReceiver;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -58,19 +59,26 @@ public class StudentWindow
                 while (true)
                 {
                     System.out.println("In loop...");
-                    QuestionMessage qm = mQuestionReceiver.getQuestion();
-                    mQuestionArea.setText(qm.getQuestionText());
-                    for (Map.Entry<String, String> entry : qm.getAnswers().entrySet())
-                    {
-                        mAnswerChoices.add(entry.getKey() + ":" + entry.getValue());
-                    }
-                    mResponseAddr = qm.getResponseAddress();
+                    final QuestionMessage qm = mQuestionReceiver.getQuestion();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            mQuestionArea.setText(qm.getQuestionText());
+                            for (Map.Entry<String, String> entry : qm.getAnswers().entrySet())
+                            {
+                                mAnswerChoices.add(entry.getKey() + ":" + entry.getValue());
+                            }
+                            mResponseAddr = qm.getResponseAddress();
+                        }
+                    });
                 }
             }
         };
+
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
+
 
     }
 

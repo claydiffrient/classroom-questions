@@ -27,6 +27,7 @@ public class QuestionReceiver
         throws Exception
     {
         String message = mMulticastHandler.getMessage();
+        System.out.println(message);
         if (message.equals("ERROR"))
         {
             throw new Exception("Error getting message.");

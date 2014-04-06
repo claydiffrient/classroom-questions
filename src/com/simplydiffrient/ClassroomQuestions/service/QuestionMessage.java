@@ -2,6 +2,7 @@ package com.simplydiffrient.ClassroomQuestions.service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -35,16 +36,20 @@ public class QuestionMessage
      */
     public QuestionMessage(String message)
     {
+        mAnswers = new LinkedHashMap<String, String>();
+        // Get rid of extraneous information
+        // int lastSemicolon = message.lastIndexOf(';');
+        message = message.trim();
         // Parse out the information.
         String[] tokens = message.split(";");
         for (int i = 0; i < tokens.length; i++)
         {
             String[] splitToken = tokens[i].split(":");
-            if (splitToken[0] == "Q")
+            if (splitToken[0].equals("Q"))
             {
                 mQuestionText = splitToken[1];
             }
-            else if (splitToken[0] == "R")
+            else if (splitToken[0].equals("R"))
             {
                 try
                 {
@@ -91,7 +96,7 @@ public class QuestionMessage
         {
             questionMessage += entry.getKey() + ":" + entry.getValue() + ";";
         }
-        questionMessage += "R:" + mResponseAddress.getHostAddress();
+        questionMessage += "R:" + mResponseAddress.getHostAddress() + ";";
         return questionMessage;
     }
 }

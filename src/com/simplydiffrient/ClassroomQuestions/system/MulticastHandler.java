@@ -24,6 +24,7 @@ public class MulticastHandler
         {
             mSocket = new MulticastSocket(GROUP_PORT);
             mSocket.joinGroup(mIPGroupAddress);
+            mSocket.setLoopbackMode(true);
         }
         catch (IOException ex)
         {
@@ -56,6 +57,7 @@ public class MulticastHandler
         try
         {
             mSocket.receive(data);
+            System.out.println("Received:" + new String(data.getData()));
             return new String(data.getData());
         }
         catch (IOException ex)
