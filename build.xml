@@ -35,15 +35,11 @@
     <target name="download-dependencies" depends="download-javafx, download-testng" />
 
     <target name="download-testng" if="lib.testng.notfound" depends="init">
-        <get dest="${lib}">
-            <url url="http://simplydiffrient.com/javalib/testng-6.8.jar" />
-        </get>
+        <get dest="${lib}/testng-6.8.jar" src="http://simplydiffrient.com/javalib/testng-6.8.jar" />
     </target>
 
     <target name="download-javafx" if="lib.jfxrt.notfound" depends="init">
-        <get dest="${lib}">
-            <url url="http://simplydiffrient.com/javalib/jfxrt.jar" />
-        </get>
+        <get dest="${lib}/jfxrt.jar" src="http://simplydiffrient.com/javalib/jfxrt.jar" />
     </target>
 
     <target name="compile" depends="init, download-dependencies">
