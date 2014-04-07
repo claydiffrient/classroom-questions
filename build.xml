@@ -29,14 +29,17 @@
                 </not>
             </and>
         </condition>
+        <condition property="java.use.java8">
+            <available file="/mnt/local/jdk1.8.0/bin/java" property="java.use.java8" />
+        </condition>
 
     </target>
 
-    <target name="download-dependencies" depends="download-javafx, download-testng" />
+    <target name="download-dependencies" depends="download-javafx" unless="java.use.java8" />
 
-    <target name="download-testng" if="lib.testng.notfound" depends="init">
+    <!--<target name="download-testng" if="lib.testng.notfound" depends="init">
         <get dest="${lib}/testng-6.8.jar" src="http://simplydiffrient.com/javalib/testng-6.8.jar" />
-    </target>
+    </target> -->
 
     <target name="download-javafx" if="lib.jfxrt.notfound" depends="init">
         <get dest="${lib}/jfxrt.jar" src="http://simplydiffrient.com/javalib/jfxrt.jar" />
@@ -45,16 +48,55 @@
     <target name="compile" depends="init, download-dependencies">
         <javac srcdir="${src}" destdir="${build}" includeantruntime="false">
             <classpath>
-                <pathelement path="lib" />
-                <pathelement location="lib/testng-6.8.jar" />
-                <pathelement location="lib/jfxrt.jar" />
+                <pathelement path="${lib}" />
+                <pathelement location="${lib}/jfxrt.jar" />
             </classpath>
         </javac>
     </target>
 
-    <taskdef resource="testngtasks" classpath="lib/testng-6.8.jar" />
+    <!--<taskdef resource="testngtasks" classpath="lib/testng-6.8.jar" /> -->
 
-    <target name="dist" depends="compile"/>
+    <target name="dist" depends="compile">
+        <jar destfile="${dist}/ClassroomQuestions.jar" basedir=".">
+            <fileset dir="${build}" />
+            <manifest>
+                <attribute name="Main-Class" value="com.simplydiffrient.ClassroomQuestions.ui.GroupSelectionWindow" />
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run-jar" depends="dist">
+        <java jar="${dist}/ClassroomQuestions.jar" fork="true">
+            <classpath>
+                <pathelement path="${lib}" />
+                <pathelement location="${lib}/jfxrt.jar" />
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-java7" depends="init, compile" unless="java.use.java8">
+        <java classname="com.simplydiffrient.ClassroomQuestions.ui.GroupSelectionWindow">
+            <jvmarg value="-Djava.net.preferIPv4Stack=true" />
+            <classpath>
+                <pathelement path="${build}" />
+                <pathelement location="${build}" />
+                <pathelement location="${lib}/jfxrt.jar" />
+            </classpath>
+        </java>
+    </target>
+
+    <target name="run-java8" depends="init, compile" if="java.use.java8">
+        <java classname="com.simplydiffrient.ClassroomQuestions.ui.GroupSelectionWindow"
+              jvm="/mnt/local/jdk1.8.0/bin/java"
+              fork="true"
+              dir="${build}">
+
+            <jvmarg value="-Djava.net.preferIPv4Stack=true" />
+        </java>
+    </target>
+
+
+    <target name="run" depends="run-java7, run-java8" />
 
 
     <target name="clean">
