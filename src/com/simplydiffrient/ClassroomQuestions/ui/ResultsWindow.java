@@ -7,12 +7,16 @@ import javafx.beans.binding.StringBinding;
 import javafx.collections.*;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -127,6 +131,12 @@ public class ResultsWindow
     {
         BorderPane rootPanel = new BorderPane();
 
+        Label heading = new Label("Results");
+        heading.setTextAlignment(TextAlignment.CENTER);
+        heading.setFont(new Font(20));
+        BorderPane.setAlignment(heading, Pos.CENTER);
+        rootPanel.setTop(heading);
+
         GridPane responsePanel = new GridPane();
         final String[] answerLabels = {"A", "B" ,"C" ,"D"};
 
@@ -137,13 +147,16 @@ public class ResultsWindow
             Label responseLabel = new Label(answerLabels[i]);
             Label valueLabel = mValueLabels.get(answerLabels[i].charAt(0));
             responseBoxes[i].getChildren().addAll(responseLabel, valueLabel);
+            responseLabel.setFont(new Font(20));
+            valueLabel.setFont(new Font(20));
 
         }
         responsePanel.add(responseBoxes[0], 0, 0);
         responsePanel.add(responseBoxes[1], 0, 1);
         responsePanel.add(responseBoxes[2], 1, 0);
         responsePanel.add(responseBoxes[3], 1, 1);
-
+        BorderPane.setAlignment(responsePanel, Pos.CENTER);
+        BorderPane.setMargin(responsePanel, new Insets(20, 150, 20, 150));
         rootPanel.setCenter(responsePanel);
 
 
