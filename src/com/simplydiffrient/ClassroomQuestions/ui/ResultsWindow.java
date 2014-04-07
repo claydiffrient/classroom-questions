@@ -1,15 +1,20 @@
 package com.simplydiffrient.ClassroomQuestions.ui;
 
 import com.simplydiffrient.ClassroomQuestions.service.AnswerReceiver;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.StringBinding;
+import javafx.collections.*;
 import javafx.concurrent.Task;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,33 +28,32 @@ public class ResultsWindow
     implements Runnable
 {
     AnswerReceiver mReceiver;
-    BarChart<String, Number> mBarChart;
-    XYChart.Series<String, Number> mBarSeries;
-    ObservableList<XYChart.Data<String, Number>> mBarData;
-
-    Map<Character, XYChart.Data<String, Number>> mData;
-
+    ObservableMap<Character, Integer> mData;
+    Map<Character, Label> mValueLabels;
     Scene mDisplay;
 
     public ResultsWindow()
     {
         mReceiver = new AnswerReceiver();
-        mBarData = FXCollections.observableArrayList();
-        mBarSeries = new XYChart.Series<String, Number>(mBarData);
-        mBarChart = generateBarChart();
+        mData = FXCollections.observableHashMap();
+        mData.put('A', 0);
+        mData.put('B', 0);
+        mData.put('C', 0);
+        mData.put('D', 0);
+        mValueLabels = new HashMap<Character, Label>(4);
+        mValueLabels.put('A', new Label("0"));
+        mValueLabels.put('B', new Label("0"));
+        mValueLabels.put('C', new Label("0"));
+        mValueLabels.put('D', new Label("0"));
         mDisplay = generateScene();
 
-        mData = new HashMap<Character, XYChart.Data<String, Number>>();
-        mData.put('A', new XYChart.Data<String, Number>("A", 0));
-        mData.put('B', new XYChart.Data<String, Number>("B", 0));
-        mData.put('C', new XYChart.Data<String, Number>("B", 0));
-        mData.put('D', new XYChart.Data<String, Number>("B", 0));
-        for (Map.Entry<Character, XYChart.Data<String, Number>> entry : mData.entrySet())
-        {
-            mBarData.add(entry.getValue());
-        }
-
-
+        this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                System.out.println("Closing socket.");
+                mReceiver.stopListening();
+            }
+        });
     }
 
     @Override
@@ -83,12 +87,37 @@ public class ResultsWindow
                     System.out.println("Changed.");
                     for (Character c : change.getAddedSubList())
                     {
-                        XYChart.Data<String, Number> val = mData.get(c);
-                        val.setYValue(val.getYValue().intValue() + 1);
+                        Integer oldValue = mData.get(c);
+                        mData.put(c, oldValue + 1);
                     }
                 }
 
 
+            }
+        });
+
+        mData.addListener(new MapChangeListener<Character, Integer>()
+        {
+            @Override
+            public void onChanged(final Change<? extends Character, ? extends Integer> change)
+            {
+                if (change.wasAdded())
+                {
+                    Task<Void> updateTask = new Task<Void>() {
+                        @Override
+                        protected Void call() throws Exception
+                        {
+                            Character key = change.getKey();
+                            //Label label = mValueLabels.get(key);
+                            Integer valueAdded = change.getValueAdded();
+                            mValueLabels.get(key).setText(valueAdded.toString());
+                            //label.setText(valueAdded.toString());
+                            return null;
+                        }
+                    };
+                    Thread updateThread = new Thread(updateTask);
+                    Platform.runLater(updateThread);
+                }
             }
         });
 
@@ -97,17 +126,28 @@ public class ResultsWindow
     Scene generateScene()
     {
         BorderPane rootPanel = new BorderPane();
-        rootPanel.setCenter(mBarChart);
-        return new Scene(rootPanel, 600, 300);
-    }
 
-    BarChart<String, Number> generateBarChart()
-    {
-        CategoryAxis xAxis = new CategoryAxis();
-        NumberAxis yAxis = new NumberAxis();
-        BarChart<String, Number> bc = new BarChart<String, Number>(xAxis, yAxis, FXCollections.observableArrayList(mBarSeries));
-        bc.setTitle("Results");
-        return bc;
+        GridPane responsePanel = new GridPane();
+        final String[] answerLabels = {"A", "B" ,"C" ,"D"};
+
+        HBox[] responseBoxes = new HBox[4];
+        for (int i = 0; i < 4; i++)
+        {
+            responseBoxes[i] = new HBox(10);
+            Label responseLabel = new Label(answerLabels[i]);
+            Label valueLabel = mValueLabels.get(answerLabels[i].charAt(0));
+            responseBoxes[i].getChildren().addAll(responseLabel, valueLabel);
+
+        }
+        responsePanel.add(responseBoxes[0], 0, 0);
+        responsePanel.add(responseBoxes[1], 0, 1);
+        responsePanel.add(responseBoxes[2], 1, 0);
+        responsePanel.add(responseBoxes[3], 1, 1);
+
+        rootPanel.setCenter(responsePanel);
+
+
+        return new Scene(rootPanel, 600, 300);
     }
 
 }

@@ -34,7 +34,6 @@ public class TeacherWindow
     implements Runnable
 {
     QuestionSender mQuestionSender;
-    ResultsWindow mResultsWindow;
     TextField[] mAnswerTextFields;
     TextField mQuestionTextField;
     Scene mDisplayScene;

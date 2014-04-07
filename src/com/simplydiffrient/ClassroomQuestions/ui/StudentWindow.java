@@ -34,18 +34,22 @@ public class StudentWindow
     implements Runnable
 {
     QuestionReceiver mQuestionReceiver;
-    AnswerSender mAnswerSender;
+    boolean mCanSendAnswer;
     ObservableList<String> mAnswerChoices;
     TextArea mQuestionArea;
     Scene mDisplayScene;
     InetAddress mResponseAddr;
+    Button mSendAnswerButton;
 
     public StudentWindow(int pGroupNumber)
     {
         mQuestionReceiver = new QuestionReceiver(pGroupNumber);
         mAnswerChoices = FXCollections.observableArrayList();
         mQuestionArea = new TextArea();
+        mSendAnswerButton = new Button("Send Answer");
+        mSendAnswerButton.setDisable(true);
         mDisplayScene = generateScene();
+
     }
 
     @Override
@@ -68,11 +72,14 @@ public class StudentWindow
                         @Override
                         public void run() {
                             mQuestionArea.setText(qm.getQuestionText());
+                            mAnswerChoices.clear();
                             for (Map.Entry<String, String> entry : qm.getAnswers().entrySet())
                             {
                                 mAnswerChoices.add(entry.getKey() + ":" + entry.getValue());
                             }
                             mResponseAddr = qm.getResponseAddress();
+                            mSendAnswerButton.setDisable(false);
+
                         }
                     });
                 }
@@ -120,20 +127,29 @@ public class StudentWindow
         Label answerLabel = new Label("Answer:");
         answerLabel.setFont(new Font(14));
         answerLabel.setLabelFor(answerChoices);
-        Button sendAnswer = new Button("Send Answer");
-        answerArea.getChildren().addAll(answerLabel, answerChoices, sendAnswer);
+
+        answerArea.getChildren().addAll(answerLabel, answerChoices, mSendAnswerButton);
         answerArea.setAlignment(Pos.CENTER);
         BorderPane.setMargin(answerArea, new Insets(0, 0, 100, 0));
         rootPanel.setBottom(answerArea);
 
-        sendAnswer.setOnAction(new EventHandler<ActionEvent>() {
+        mSendAnswerButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if (mResponseAddr != null)
                 {
-                    char choice = answerChoices.getValue().charAt(0);
-                    AnswerSender sender = new AnswerSender(mResponseAddr);
-                    sender.send(choice);
+                    if (!answerChoices.getValue().isEmpty())
+                    {
+                        char choice = answerChoices.getValue().charAt(0);
+                        AnswerSender sender = new AnswerSender(mResponseAddr);
+                        sender.send(choice);
+                        mSendAnswerButton.setDisable(true);
+                    }
+                    else
+                    {
+                        //TODO: Add something visual as an error.
+                        System.out.println("Error: You need to make a choice of answer first...");
+                    }
                 }
 
             }

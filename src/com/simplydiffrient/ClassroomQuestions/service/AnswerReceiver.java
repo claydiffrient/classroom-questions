@@ -32,6 +32,16 @@ public class AnswerReceiver
         mHandler.listen();
     }
 
+    public void stopListening()
+    {
+        mHandler.setListening(false);
+    }
+
+    public void startListening()
+    {
+        mHandler.setListening(true);
+    }
+
 
 
 
