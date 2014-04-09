@@ -17,3 +17,6 @@ out
 *.class
 lib
 dist
+build
+.idea
+.old
