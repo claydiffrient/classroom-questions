@@ -7,23 +7,41 @@ import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
 /**
- * Created by clay on 4/5/14.
+ * System level class to handle all multicast operations.
  */
 public class MulticastHandler
 {
-    InetAddress mIPGroupAddress;
-    MulticastSocket mSocket;
+    /**
+     * The Multicast Group IP Address
+     */
+    private InetAddress mIPGroupAddress;
 
-    protected final static int GROUP_PORT = 20000;
+    /**
+     * Multicast socket that will be bound to the Multicast IP Address
+     */
+    private MulticastSocket mSocket;
 
+    /**
+     * The port used for the multicast socket.
+     * TODO: Move this to a properties file.
+     */
+    private final static int GROUP_PORT = 20000;
+
+    /**
+     * Constructor.
+     * @param pAddressNumber The last part of the IP for the multicast group.  Must be between 1 and 255.
+     * @throws UnknownHostException
+     */
     public MulticastHandler(int pAddressNumber)
         throws UnknownHostException
     {
+        // TODO: Move the IP address range used to a properties file.
         mIPGroupAddress = InetAddress.getByName("224.0.0." + pAddressNumber);
         try
         {
             mSocket = new MulticastSocket(GROUP_PORT);
             mSocket.joinGroup(mIPGroupAddress);
+            // Set up loopback so the same machine can receive the packet that was sent out.
             mSocket.setLoopbackMode(true);
         }
         catch (IOException ex)
@@ -33,6 +51,11 @@ public class MulticastHandler
         }
     }
 
+    /**
+     * Sends a message over the multicast socket.
+     * @param pMessage The message to send
+     * @return True, if successful
+     */
     public boolean sendMessage(String pMessage)
     {
         byte[] bytes = pMessage.getBytes();
@@ -50,6 +73,10 @@ public class MulticastHandler
         }
     }
 
+    /**
+     * Gets the message received on the multicast socket
+     * @return The message as a string.
+     */
     public String getMessage()
     {
         byte[] buffer = new byte[1024];

@@ -27,20 +27,50 @@ import java.net.InetAddress;
 import java.util.Map;
 
 /**
- * Created by clay on 4/5/14.
+ * The window that students interact with.
+ * @author Clay Diffrient
+ * @version 1.0.0
  */
 public class StudentWindow
     extends Stage
     implements Runnable
 {
+
+    /**
+     * Holds the QuestionReceiver needed for the underlying operations.
+     * @see com.simplydiffrient.ClassroomQuestions.service.QuestionReceiver
+     */
     QuestionReceiver mQuestionReceiver;
-    boolean mCanSendAnswer;
+
+    /**
+     * Holds the answer choices that are possible.
+     */
     ObservableList<String> mAnswerChoices;
+
+    /**
+     * The text area which question text will appear in.
+     */
     TextArea mQuestionArea;
+
+    /**
+     * The scene shown in the window
+     */
     Scene mDisplayScene;
+
+    /**
+     * Holds the address that replies will be sent to.
+     */
     InetAddress mResponseAddr;
+
+    /**
+     * The button used to send data back to the teacher with.
+     */
     Button mSendAnswerButton;
 
+    /**
+     * Constructor
+     * @param pGroupNumber The group to join.
+     */
     public StudentWindow(int pGroupNumber)
     {
         mQuestionReceiver = new QuestionReceiver(pGroupNumber);
@@ -52,6 +82,9 @@ public class StudentWindow
 
     }
 
+    /**
+     * Runs all the operations for the window.
+     */
     @Override
     public void run()
     {
@@ -68,6 +101,7 @@ public class StudentWindow
                 {
                     System.out.println("In loop...");
                     final QuestionMessage qm = mQuestionReceiver.getQuestion();
+                    // Make sure that this all ends up on the application thread.
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
@@ -93,6 +127,10 @@ public class StudentWindow
 
     }
 
+    /**
+     * Creates the scene to be displayed.
+     * @return The scene
+     */
     private Scene generateScene()
     {
         BorderPane rootPanel = new BorderPane();

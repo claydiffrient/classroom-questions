@@ -10,6 +10,9 @@ import java.util.Map;
  * Classroom Questions Protocol which is as follows:
  *
  *  Q:{Question asked here};A:{Answer A};B:{Answer B};C:{Answer C};D:{Answer D};R:{Teacher IP Address}
+ *
+ *  @author Clay Diffrient
+ *  @version 1.0.0
  */
 public class QuestionMessage
 {
@@ -19,9 +22,9 @@ public class QuestionMessage
 
     /**
      * Constructor for a QuestionMessage from the various parts
-     * @param pQuestionText
-     * @param pAnswers
-     * @param pResponseAddress
+     * @param pQuestionText The text of the question
+     * @param pAnswers A map of answers to the question
+     * @param pResponseAddress The IP Address of the response.
      */
     public QuestionMessage(String pQuestionText, Map<String, String> pAnswers, InetAddress pResponseAddress)
     {
@@ -32,19 +35,19 @@ public class QuestionMessage
 
     /**
      * Constructor from a string.
-     * @param message
+     * @param pMessage The string version of the message.
      */
-    public QuestionMessage(String message)
+    public QuestionMessage(String pMessage)
     {
         mAnswers = new LinkedHashMap<String, String>();
         // Get rid of extraneous information
         // int lastSemicolon = message.lastIndexOf(';');
-        message = message.trim();
+        pMessage = pMessage.trim();
         // Parse out the information.
-        String[] tokens = message.split(";");
-        for (int i = 0; i < tokens.length; i++)
+        String[] tokens = pMessage.split(";");
+        for (String token : tokens)
         {
-            String[] splitToken = tokens[i].split(":");
+            String[] splitToken = token.split(":");
             if (splitToken[0].equals("Q"))
             {
                 mQuestionText = splitToken[1];
@@ -58,7 +61,6 @@ public class QuestionMessage
                 catch (UnknownHostException ex)
                 {
                     // TODO: Add better error handling here.
-                    // Perhaps even change it to
                 }
             }
             else
@@ -68,16 +70,28 @@ public class QuestionMessage
         }
     }
 
+    /**
+     * Returns the text of the question.
+     * @return Question Text
+     */
     public String getQuestionText()
     {
         return mQuestionText;
     }
 
+    /**
+     * Returns the map of answers.
+     * @return Answer Map
+     */
     public Map<String, String> getAnswers()
     {
         return mAnswers;
     }
 
+    /**
+     * Returns the address to which a reponse will be sent.
+     * @return Response Address
+     */
     public InetAddress getResponseAddress()
     {
         return mResponseAddress;
@@ -86,7 +100,7 @@ public class QuestionMessage
 
     /**
      * Outputs the QuestionMessage in the proper format.
-     * @return String
+     * @return String representation of the Question Message
      */
     @Override
     public String toString()

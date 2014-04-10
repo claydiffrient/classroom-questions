@@ -28,15 +28,32 @@ import java.util.Map;
  * The representation that is displayed for teachers.
  *
  * @author Clay Diffrient
+ * @version 1.0.0
  */
 public class TeacherWindow
     extends Stage
     implements Runnable
 {
-    QuestionSender mQuestionSender;
-    TextField[] mAnswerTextFields;
-    TextField mQuestionTextField;
-    Scene mDisplayScene;
+    /**
+     * Holds the underlying QuestionSender
+     * @see com.simplydiffrient.ClassroomQuestions.service.QuestionSender
+     */
+    final private QuestionSender mQuestionSender;
+
+    /**
+     * The text fields used to hold the answers
+     */
+    final private TextField[] mAnswerTextFields;
+
+    /**
+     * The text field for the questions
+     */
+    final private TextField mQuestionTextField;
+
+    /**
+     * The scene that is displayed.
+     */
+    final private Scene mDisplayScene;
 
     /**
      * Constructor
@@ -56,6 +73,9 @@ public class TeacherWindow
 
     }
 
+    /**
+     * Starts the window running.
+     */
     @Override
     public void run()
     {
@@ -165,12 +185,29 @@ public class TeacherWindow
         return new Scene(rootPanel, 600, 300);
     }
 
+    /**
+     * Private class to handle max lengths for the UI.
+     * @author Clay Diffrient
+     * @version 1.0.0
+     */
     private class MaxLengthEvent
             implements EventHandler<KeyEvent>
     {
-        private int mLength;
-        private Label mUpdateLabel;
+        /**
+         * The length allowed in the box.
+         */
+        final private int mLength;
 
+        /**
+         * The label to update when length changes.
+         */
+        final private Label mUpdateLabel;
+
+        /**
+         * Constructor
+         * @param pLength the length allowed
+         * @param pUpdateLabel the label to update
+         */
         public MaxLengthEvent(int pLength, Label pUpdateLabel)
         {
             mLength = pLength;

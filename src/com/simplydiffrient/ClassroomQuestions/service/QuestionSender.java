@@ -5,12 +5,23 @@ import com.simplydiffrient.ClassroomQuestions.system.MulticastHandler;
 import java.net.UnknownHostException;
 
 /**
- * Created by clay on 4/5/14.
+ * Handles all the dealings with sending questions from the teacher to students.
+ *
+ * @author Clay Diffrient
+ * @version 1.0.0
  */
 public class QuestionSender
 {
+    /**
+     * The underlying handler for the multicast.
+     * @see com.simplydiffrient.ClassroomQuestions.system.MulticastHandler
+     */
     MulticastHandler mMulticastHandler;
 
+    /**
+     * Constructor
+     * @param pGroupNumber The group number to join
+     */
     public QuestionSender(int pGroupNumber)
     {
         try
@@ -23,6 +34,10 @@ public class QuestionSender
         }
     }
 
+    /**
+     * Sends questions to all the subscribed students
+     * @param pMessage The QuestionMessage to send.
+     */
     public void sendQuestion(QuestionMessage pMessage)
     {
         if (mMulticastHandler.sendMessage(pMessage.toString()))

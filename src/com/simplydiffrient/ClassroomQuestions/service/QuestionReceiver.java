@@ -5,12 +5,26 @@ import com.simplydiffrient.ClassroomQuestions.system.MulticastHandler;
 import java.net.UnknownHostException;
 
 /**
- * Created by clay on 4/5/14.
+ * Represents the actions needed to receive questions.
+ * Wraps the methods of the system level MulticastHandler
+ *
+ * @author Clay Diffrient
+ * @version 1.0.0
+ *
+ * @see com.simplydiffrient.ClassroomQuestions.system.MulticastHandler
  */
 public class QuestionReceiver
 {
+    /**
+     * The underlying MulticastHandler
+     * @see com.simplydiffrient.ClassroomQuestions.system.MulticastHandler
+     */
     MulticastHandler mMulticastHandler;
 
+    /**
+     * Constructor
+     * @param pGroupNumber The group to join
+     */
     public QuestionReceiver(int pGroupNumber)
     {
         try
@@ -23,6 +37,12 @@ public class QuestionReceiver
         }
     }
 
+
+    /**
+     * Returns the question received from the teacher
+     * @return QuestionMessage based on the message received
+     * @throws Exception
+     */
     public QuestionMessage getQuestion()
         throws Exception
     {

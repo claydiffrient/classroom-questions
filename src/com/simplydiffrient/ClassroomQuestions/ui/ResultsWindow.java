@@ -2,15 +2,12 @@ package com.simplydiffrient.ClassroomQuestions.ui;
 
 import com.simplydiffrient.ClassroomQuestions.service.AnswerReceiver;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
 import javafx.collections.*;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.chart.*;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -21,21 +18,42 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Created by clay on 4/5/14.
+ * Represents the visuals for the teacher receiving results.
+ *
+ * @author Clay Diffrient
+ * @version 1.0.0
  */
 public class ResultsWindow
     extends Stage
     implements Runnable
 {
+    /**
+     * The AnswerReceiver that is used to receive the results.
+     * @see com.simplydiffrient.ClassroomQuestions.service.AnswerReceiver
+     */
     AnswerReceiver mReceiver;
+
+    /**
+     * Holds the data mapping response characters to response values.
+     */
     ObservableMap<Character, Integer> mData;
+
+    /**
+     * Holds the mapping of response characters to the labels they use.
+     */
     Map<Character, Label> mValueLabels;
+
+    /**
+     * Holds the scene used for the display.
+     */
     Scene mDisplay;
 
+    /**
+     * Constructor
+     */
     public ResultsWindow()
     {
         mReceiver = new AnswerReceiver();
@@ -51,15 +69,21 @@ public class ResultsWindow
         mValueLabels.put('D', new Label("0"));
         mDisplay = generateScene();
 
-        this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<WindowEvent>() {
+        //Set up a event handler for closing the socket when the window is closed.
+        this.addEventHandler(WindowEvent.WINDOW_CLOSE_REQUEST, new EventHandler<WindowEvent>()
+        {
             @Override
-            public void handle(WindowEvent windowEvent) {
+            public void handle(WindowEvent windowEvent)
+            {
                 System.out.println("Closing socket.");
                 mReceiver.stopListening();
             }
         });
     }
 
+    /**
+     * Runs the window in a separate thread.
+     */
     @Override
     public void run()
     {
@@ -127,6 +151,10 @@ public class ResultsWindow
 
     }
 
+    /**
+     * Generates the scene to be displayed.
+     * @return Generated scene
+     */
     Scene generateScene()
     {
         BorderPane rootPanel = new BorderPane();

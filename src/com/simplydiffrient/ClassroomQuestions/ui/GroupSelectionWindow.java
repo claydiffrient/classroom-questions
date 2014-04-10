@@ -16,16 +16,18 @@ import javafx.stage.Stage;
 
 /**
  * Window that asks for a group number for the application.
- * It is used by both the Student Application and the Teacher Application
+ * It is used by both the Student Application and the Teacher Application.
+ * This is essentially the main entry point into the application as a whole.
  *
  * @author Clay Diffrient
+ * @version 1.0.0
  */
 public class GroupSelectionWindow
     extends Application
 {
     /**
      * This is the main entry point to the application from the commandline.
-     * @param args
+     * @param args Commandline arguments, none currently.
      */
     public static void main(String[] args)
     {
@@ -35,7 +37,7 @@ public class GroupSelectionWindow
 
     /**
      * Starts the application running.
-     * @param stage
+     * @param stage The JavaFX stage to use
      * @throws Exception
      */
     @Override
@@ -51,7 +53,7 @@ public class GroupSelectionWindow
 
     /**
      * Generates the scene for the application.
-     * @return
+     * @return The scene to be placed on the stage.
      */
     private Scene generateScene()
     {
@@ -89,9 +91,11 @@ public class GroupSelectionWindow
         rootPanel.setBottom(buttonArea);
 
         // Add some function to the buttons
-        teacherButton.setOnAction(new EventHandler<ActionEvent>() {
+        teacherButton.setOnAction(new EventHandler<ActionEvent>()
+        {
             @Override
-            public void handle(ActionEvent actionEvent) {
+            public void handle(ActionEvent actionEvent)
+            {
                 if ((response.getText() == null) || (response.getText().isEmpty()))
                 {
                     errorLabel.setText("You must provide a group number");
@@ -119,7 +123,8 @@ public class GroupSelectionWindow
             }
         });
 
-        studentButton.setOnAction(new EventHandler<ActionEvent>() {
+        studentButton.setOnAction(new EventHandler<ActionEvent>()
+        {
             @Override
             public void handle(ActionEvent actionEvent) {
                 if ((response.getText() == null) || (response.getText().isEmpty()))
