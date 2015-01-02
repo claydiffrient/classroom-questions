@@ -1,0 +1,29 @@
+apply plugin: 'java'
+// This lets us bring in some JavaFX goodness.
+apply from: "http://dl.bintray.com/content/shemnon/javafx-gradle/8.1.1/javafx.plugin"
+
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  testCompile group: 'testng', name: 'testng', version: '6.8'
+}
+
+test {
+  useTestNG()
+}
+
+jar {
+  manifest {
+    attributes 'Main-Class': 'com.simplydiffrient.ClassroomQuestions.ui.GroupSelectionWindow'
+  }
+}
+
+javafx {
+  appID 'ClassroomQuestions'
+  appName 'Classroom Questions'
+
+  mainClass 'com.simplydiffrient.ClassroomQuestions.ui.GroupSelectionWindow'
+}
