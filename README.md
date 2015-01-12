@@ -1,8 +1,10 @@
 classroom-questions
 ===================
 
-A system by which questions are sent from a teacher laptop to student laptops 
-via multicast after which the students can respond to the teacher with an answer 
+[![Build Status](https://travis-ci.org/claydiffrient/classroom-questions.svg?branch=master)](https://travis-ci.org/claydiffrient/classroom-questions)
+
+A system by which questions are sent from a teacher laptop to student laptops
+via multicast after which the students can respond to the teacher with an answer
 all implemented in Java.
 
 The build.xml file included works well for use in the Linux Lab on the
