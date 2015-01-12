@@ -18,7 +18,7 @@ public class UnicastHandler
     /**
      * The port for receiving unicast messages.
      */
-    private static final int LISTEN_PORT = 20001;
+    private static final int LISTEN_PORT = Integer.parseInt(PropertyGetter.getInstance().getProperty("listenPort"));;
 
     /**
      * List in which to hold the data received.

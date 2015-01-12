@@ -23,9 +23,8 @@ public class MulticastHandler
 
     /**
      * The port used for the multicast socket.
-     * TODO: Move this to a properties file.
      */
-    private final static int GROUP_PORT = 20000;
+    private final static int GROUP_PORT = Integer.parseInt(PropertyGetter.getInstance().getProperty("groupPort"));
 
     /**
      * Constructor.
@@ -35,8 +34,7 @@ public class MulticastHandler
     public MulticastHandler(int pAddressNumber)
         throws UnknownHostException
     {
-        // TODO: Move the IP address range used to a properties file.
-        mIPGroupAddress = InetAddress.getByName("224.0.0." + pAddressNumber);
+        mIPGroupAddress = InetAddress.getByName(PropertyGetter.getInstance().getProperty("ipRange") + pAddressNumber);
         try
         {
             mSocket = new MulticastSocket(GROUP_PORT);
