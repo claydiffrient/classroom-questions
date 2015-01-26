@@ -8,11 +8,13 @@ repositories {
 }
 
 dependencies {
-  testCompile group: 'testng', name: 'testng', version: '6.8'
+  testCompile(['org.testng:testng:6.8.13'])
 }
 
 test {
-  useTestNG()
+  useTestNG() {
+    options.listeners << 'com.simplydiffrient.ClassroomQuestions.test.utils.DotTestListener'
+  }
 }
 
 jar {
